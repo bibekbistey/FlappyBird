@@ -8,32 +8,35 @@ def obstacles():
     top_pipe=pipe_img.get_rect(midtop=(660,pipex))
     bottom_pipe = pipe_img.get_rect(midbottom=(660, pipex-200))
     return top_pipe,bottom_pipe
+
+
 def collision():
     global game_over,score_time
     for pipe in pipes:
         if pipe.bottom>636:
-            #flipped_pipe=pygame.transform.flip(pipe_img,False,True)
-            #screen.blit(flipped_pipe,pipe)
             screen.blit(pipe_img,pipe)
         else:
-            #screen.blit(pipe_img,pipe)
+
             flip_pipe=pygame.transform.flip(pipe_img,False,True)
             screen.blit(flip_pipe,pipe)
-
-        #screen.blit(pipe_img,pipe)
         pipe.centerx-=pipe_speed
         if bird_rect.colliderect(pipe):
             game_over=True
             score_time=True
             hit_sound.play()
+
+#initializing pygame
 pygame.init()
 
+#score card
 SCORE_FONT = pygame.font.Font('freesansbold.ttf', 32)
-
 def score_display():
     display = SCORE_FONT.render(str (score), True, (255,255,255))
     score_rect=display.get_rect(center=(350,66))
     screen.blit(display,score_rect)
+
+
+
 def score_update():
     global score, score_time, high_score
     if pipes:
@@ -61,35 +64,49 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Flappy Bird')
 
 
-#define game variables
+#game variables
+gravity=0.60
+#for ground
 moving_ground = 0
 ground_speed = 4
-gravity=0.60
+
+#for bird
 bird_movement=0
+
+#for pipes
 pipe_height=[350,400,533,490]
 pipe_speed=4
-
-#load images
-bg = pygame.image.load("bg.png")
-ground_img = pygame.image.load("ground.png")
-bird_img=pygame.image.load("bird1.png")
-bird_rect=bird_img.get_rect(center=(67,622/2))
-pipe_img=pygame.image.load("pipe.png")
 pipes=[]
 create_pipes=pygame.USEREVENT+1
 pygame.time.set_timer(create_pipes,1800)
-#game over
-game_over=False
-game_over_image=pygame.image.load("restart.png")
-game_over_rect=game_over_image.get_rect(center=(width//2,height//2))
+
 # score
 score=0
 high_score=0
 score_time=True
+
+
+#load images
+bg = pygame.image.load("bacground4.jpg")
+ground_img = pygame.image.load("ground.png")
+bird_img=pygame.image.load("bird5.png")
+bird_rect=bird_img.get_rect(center=(67,622/2))
+pipe_img=pygame.image.load("pipe.1.png")
+game_over_image=pygame.image.load("gameover2.png")
+
+
+
+#game over
+game_over=False
+
+game_over_rect=game_over_image.get_rect(center=(width//2,height//2))
+
+#game sound
 score_sound = pygame.mixer.Sound("score.wav")
 #flap_sound = pygame.mixer.Sound("sounds/wing.wav")
 fall_sound = pygame.mixer.Sound("Fall.wav")
 hit_sound = pygame.mixer.Sound("Hit_sound.wav")
+
 
 
 run = True
@@ -97,10 +114,13 @@ while run:
 
     clock.tick(fps)
 
-    #draw background
+    #drawing background
     screen.blit(bg, (0,0))
+
     #Adding bird
     screen.blit(bird_img,bird_rect)
+
+
     #Adding obstacles
     #screen.blit(pipe_img,(300,100))
 
@@ -109,11 +129,8 @@ while run:
     moving_ground -= ground_speed
     if abs(moving_ground) > 35:
         moving_ground = 0
-        # moving bird
 
-
-
-
+#moving bird
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -159,13 +176,6 @@ while run:
         screen.blit(game_over_image, game_over_rect)
 
 
-    #bird_movement += gravity
-    #bird_rect.centery += bird_movement
-
-
-
-    #collision()
-        #obstacles()
     pygame.display.update()
 
 pygame.quit()
